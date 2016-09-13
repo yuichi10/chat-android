@@ -1,5 +1,6 @@
 package dev.yuichi.com.chat;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -114,6 +115,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 Log.w("auth", "signInWithEmail:success", task.getException());
                                 Toast.makeText(MainActivity.this, "authに成功しました",
                                         Toast.LENGTH_SHORT).show();
+
+                                Intent intent = new Intent();
+                                intent.setClassName("dev.yuichi.com.chat", "dev.yuichi.com.chat.RoomListActivity");
+                                startActivity(intent);
                             }
                         }
                     });
