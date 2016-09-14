@@ -18,7 +18,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".BindAppActivity"></activity>
+        <activity android:name=".BindAppActivity" />
+        <activity android:name=".SignUpActivity"></activity>
     </application>
 
 </manifest>

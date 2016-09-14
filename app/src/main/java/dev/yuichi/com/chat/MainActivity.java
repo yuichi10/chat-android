@@ -19,11 +19,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseUser user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,12 +37,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button signUpButton = (Button) findViewById(R.id.signUpButton);
         signUpButton.setOnClickListener(this);
         Firebase.setAndroidContext(this);
-        Firebase firebase = new Firebase("https://" + D.FirebaseURL +".firebaseio.com/");
+        Firebase firebase = new Firebase(D.FirebaseURL);
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
+                //FirebaseUser user = firebaseAuth.getCurrentUser();
+                user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
                     Log.d("auth", "onAuthStateChanged:signed_in:" + user.getUid());
@@ -92,13 +97,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         EditText passwordEdit = (EditText)findViewById(R.id.passwordEditText);
         SpannableStringBuilder email = (SpannableStringBuilder)emailEdit.getText();
         SpannableStringBuilder password = (SpannableStringBuilder)passwordEdit.getText();
-        if (email.toString().equals("") == true || password.toString().equals("") == true){
-            Toast.makeText(this, "空欄があります", Toast.LENGTH_SHORT).show();
-            return;
-        }
         if (v != null) {
             switch (v.getId()) {
                 case R.id.signInButton:
+                    if (email.toString().equals("") == true || password.toString().equals("") == true){
+                        Toast.makeText(this, "空欄があります", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     //Sign In
                     mAuth.signInWithEmailAndPassword(email.toString(), password.toString()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -124,26 +129,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     });
                     break;
                 case R.id.signUpButton:
+                    Intent intent = new Intent();
+                    intent.setClassName("dev.yuichi.com.chat", "dev.yuichi.com.chat.SignUpActivity");
+                    startActivity(intent);
                     //Sign Up
-                    mAuth.createUserWithEmailAndPassword(email.toString(), password.toString()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            Log.d("auth", "createUserWithEmail:onComplete:" + task.isSuccessful());
-
-                            // If sign in fails, display a message to the user. If sign in succeeds
-                            // the auth state listener will be notified and logic to handle the
-                            // signed in user can be handled in the listener.
-                            if (!task.isSuccessful()) {
-                                Toast.makeText(MainActivity.this, "ユーザー作成失敗",
-                                        Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(MainActivity.this, "ユーザー作成成功",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+                    /*
+                    */
                     break;
             }
         }
+    }
+
+    public void signIn(String email, String password) {
+        //Sign In
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                Log.d("auth", "signInWithEmail:onComplete:" + task.isSuccessful());
+                // If sign in fails, display a message to the user. If sign in succeeds
+                // the auth state listener will be notified and logic to handle the
+                // signed in user can be handled in the listener.
+                if (!task.isSuccessful()) {
+                    Log.w("auth", "signInWithEmail:failed", task.getException());
+                    Toast.makeText(MainActivity.this, "authに失敗しました",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.w("auth", "signInWithEmail:success", task.getException());
+                    Toast.makeText(MainActivity.this, "authに成功しました",
+                            Toast.LENGTH_SHORT).show();
+
+                    SignUp signup = new SignUp("name");
+                    //Firebase firebase = new Firebase(D.FirebaseURL);
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference dbRef = database.getReference();
+                    dbRef.child("users").child(user.getUid()).setValue(signup);
+                    //firebase.child("users/" + user.getUid()).setValue(signup);
+                    //firebase.push().setValue(signup.getSignUpDataForm());
+                }
+            }
+        });
     }
 }

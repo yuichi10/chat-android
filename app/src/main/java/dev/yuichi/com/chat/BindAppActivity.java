@@ -8,6 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.TabHost;
 
+import com.firebase.client.Firebase;
+
 public class BindAppActivity extends FragmentActivity implements FragmentTabHost.OnTabChangeListener {
 
     @Override
@@ -18,6 +20,8 @@ public class BindAppActivity extends FragmentActivity implements FragmentTabHost
         setToolBarInfo();
 
         setTabInfo();
+
+        //Firebase firebase = new Firebase("https://" + D.FirebaseURL +".firebaseio.com/");
     }
 
     @Override
