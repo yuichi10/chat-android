@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                         Toast.LENGTH_SHORT).show();
 
                                 Intent intent = new Intent();
-                                intent.setClassName("dev.yuichi.com.chat", "dev.yuichi.com.chat.RoomListActivity");
+                                intent.setClassName("dev.yuichi.com.chat", "dev.yuichi.com.chat.BindAppActivity");
                                 startActivity(intent);
                             }
                         }
