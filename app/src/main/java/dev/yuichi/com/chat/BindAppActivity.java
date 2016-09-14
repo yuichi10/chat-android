@@ -42,9 +42,9 @@ public class BindAppActivity extends FragmentActivity implements FragmentTabHost
         tabHost.setup(this, getSupportFragmentManager(), R.id.container);
         TabHost.TabSpec tabSpec1, tabSpec2;
         tabSpec1 = tabHost.newTabSpec("tab1");
-        tabSpec1.setIndicator("tab1");
+        tabSpec1.setIndicator("ルーム");
         // TabHost に追加
-        tabHost.addTab(tabSpec1, FirstTabFragment.class, null);
+        tabHost.addTab(tabSpec1, RoomListFragment.class, null);
 
         // TabSpec を生成する
         tabSpec2 = tabHost.newTabSpec("tab2");
