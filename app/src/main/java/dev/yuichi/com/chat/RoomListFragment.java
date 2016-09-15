@@ -1,14 +1,19 @@
 package dev.yuichi.com.chat;
 
+import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 
 /**
@@ -19,7 +24,7 @@ import android.widget.ListView;
  * Use the {@link RoomListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RoomListFragment extends Fragment {
+public class RoomListFragment extends ListFragment implements AdapterView.OnItemClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -30,6 +35,8 @@ public class RoomListFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private Context mContext = null;
 
     public RoomListFragment() {
         // Required empty public constructor
@@ -65,8 +72,23 @@ public class RoomListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View roomList = inflater.inflate(R.layout.fragment_room_list, container, false);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                mContext, android.R.layout.simple_list_item_1);
+        adapter.add("listview item 1");
+        adapter.add("listview item 2");
+        adapter.add("listview item 3");
+
+        setListAdapter(adapter);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_room_list, container, false);
+        return roomList;
+
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getListView().setOnItemClickListener(this);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -80,6 +102,27 @@ public class RoomListFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        //if (!(activity instanceof RecyclerFragmentListener)) {
+        //    throw new UnsupportedOperationException(
+        //            "Listener is not Implementation.");
+        //} else {
+        //    mFragmentListener = (RecyclerFragmentListener) activity;
+        //}
+        mContext = context;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        String item = (String)getListView().getItemAtPosition(position);
+        Toast.makeText(mContext,
+                item, Toast.LENGTH_LONG
+        ).show();
     }
 
     /**
