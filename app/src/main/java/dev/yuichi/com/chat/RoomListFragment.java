@@ -3,6 +3,7 @@ package dev.yuichi.com.chat;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -109,7 +110,7 @@ public class RoomListFragment extends ListFragment implements AdapterView.OnItem
                             public void onDataChange(DataSnapshot snapshot) {
                                 Room room = snapshot.getValue(Room.class);
                                 System.out.println(room.getName());
-                                RoomListInfo roomListInfo = new RoomListInfo(room.getName(), room.getGroup(), key);
+                                RoomListInfo roomListInfo = new RoomListInfo(key, room.getGroup(), room.getName());
                                 mAdapter.addRoomListItem(roomListInfo);
                                 mAdapter.notifyDataSetChanged();
                             }
@@ -173,6 +174,10 @@ public class RoomListFragment extends ListFragment implements AdapterView.OnItem
         Toast.makeText(mContext,
                 item.getRoomID(), Toast.LENGTH_LONG
         ).show();
+        Intent intent = new Intent();
+        intent.putExtra(D.RoomID, item.getRoomID());
+        intent.setClassName(D.packageRoot, D.packageRoot + ".ChatActivity");
+        startActivity(intent);
     }
 
     @Override
