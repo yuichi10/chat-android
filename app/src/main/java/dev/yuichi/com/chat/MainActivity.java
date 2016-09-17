@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseUser user;
+    private FirebaseUser mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +43,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 //FirebaseUser user = firebaseAuth.getCurrentUser();
-                user = firebaseAuth.getCurrentUser();
-                if (user != null) {
+                mUser = firebaseAuth.getCurrentUser();
+                if (mUser != null) {
                     // User is signed in
-                    Log.d("auth", "onAuthStateChanged:signed_in:" + user.getUid());
+                    D.UserID = mUser.getUid();
+                    Log.d("auth", "onAuthStateChanged:signed_in:" + mUser.getUid());
                 } else {
                     // User is signed out
                     Log.d("auth", "onAuthStateChanged:signed_out");
@@ -120,7 +121,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 Log.w("auth", "signInWithEmail:success", task.getException());
                                 Toast.makeText(MainActivity.this, "authに成功しました",
                                         Toast.LENGTH_SHORT).show();
-
                                 Intent intent = new Intent();
                                 intent.setClassName("dev.yuichi.com.chat", "dev.yuichi.com.chat.BindAppActivity");
                                 startActivity(intent);
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     //Firebase firebase = new Firebase(D.FirebaseURL);
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference dbRef = database.getReference();
-                    dbRef.child("users").child(user.getUid()).setValue(signup);
+                    dbRef.child("users").child(mUser.getUid()).setValue(signup);
                     //firebase.child("users/" + user.getUid()).setValue(signup);
                     //firebase.push().setValue(signup.getSignUpDataForm());
                 }

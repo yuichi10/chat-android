@@ -15,6 +15,19 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.firebase.client.AuthData;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,7 +50,9 @@ public class RoomListFragment extends ListFragment implements AdapterView.OnItem
     private OnFragmentInteractionListener mListener;
 
     private Context mContext = null;
-
+    private DatabaseReference mDatabase;
+    private Firebase firebase;
+    ArrayAdapter<String> mAdapter;
     public RoomListFragment() {
         // Required empty public constructor
     }
@@ -72,14 +87,36 @@ public class RoomListFragment extends ListFragment implements AdapterView.OnItem
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View roomList = inflater.inflate(R.layout.fragment_room_list, container, false);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+        mAdapter = new ArrayAdapter<String>(
                 mContext, android.R.layout.simple_list_item_1);
-        adapter.add("listview item 1");
-        adapter.add("listview item 2");
-        adapter.add("listview item 3");
+        firebase = new Firebase(D.FirebaseURL);
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        setListAdapter(adapter);
+        mDatabase.child(D.Users).child(D.UserID).child(D.Rooms).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println(snapshot.getValue());
+                //mAdapter.add(snapshot.getValue());
+                HashMap<String, Boolean> value = (HashMap)snapshot.getValue();
+                System.out.println("value: " + value);
+                for (String key : value.keySet()) {
+                    System.out.println(key + " => " + value.get(key));
+                    mAdapter.add(key);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getMessage());
+            }
+
+            //@Override
+            //public void onCancelled(FirebaseError firebaseError) {
+            //    System.out.println("The read failed: " + firebaseError.getMessage());
+            //}
+        });
+        View roomList = inflater.inflate(R.layout.fragment_room_list, container, false);
+        setListAdapter(mAdapter);
         // Inflate the layout for this fragment
         return roomList;
 

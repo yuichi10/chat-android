@@ -42,6 +42,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 mUser = firebaseAuth.getCurrentUser();
                 if (mUser != null) {
                     // User is signed in
+                    //IDの保存
+                    D.UserID = mUser.getUid();
                     Log.d("auth", "onAuthStateChanged:signed_in:" + mUser.getUid());
                 } else {
                     // User is signed out
