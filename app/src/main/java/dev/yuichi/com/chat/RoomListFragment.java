@@ -28,6 +28,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import dev.yuichi.com.chat.FirebaseModel.Room;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,7 +54,8 @@ public class RoomListFragment extends ListFragment implements AdapterView.OnItem
     private Context mContext = null;
     private DatabaseReference mDatabase;
     private Firebase firebase;
-    ArrayAdapter<String> mAdapter;
+    RoomListAdapter mAdapter;
+    View mView;
     public RoomListFragment() {
         // Required empty public constructor
     }
@@ -87,36 +90,46 @@ public class RoomListFragment extends ListFragment implements AdapterView.OnItem
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mAdapter = new ArrayAdapter<String>(
-                mContext, android.R.layout.simple_list_item_1);
+        //mAdapter = new ArrayAdapter<String>(
+         //       mContext, android.R.layout.simple_list_item_1);
+        mAdapter = new RoomListAdapter(mContext);
         firebase = new Firebase(D.FirebaseURL);
+        //ルームの情報をadapterに追加
         mDatabase = FirebaseDatabase.getInstance().getReference();
-
         mDatabase.child(D.Users).child(D.UserID).child(D.Rooms).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 System.out.println(snapshot.getValue());
-                //mAdapter.add(snapshot.getValue());
-                HashMap<String, Boolean> value = (HashMap)snapshot.getValue();
+                HashMap<String, Boolean> value = (HashMap) snapshot.getValue();
                 System.out.println("value: " + value);
-                for (String key : value.keySet()) {
-                    System.out.println(key + " => " + value.get(key));
-                    mAdapter.add(key);
+                if (value != null) {
+                    for (final String key : value.keySet()) {
+                        mDatabase.child(D.Rooms).child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+                                Room room = snapshot.getValue(Room.class);
+                                System.out.println(room.getName());
+                                RoomListInfo roomListInfo = new RoomListInfo(room.getName(), room.getGroup(), key);
+                                mAdapter.addRoomListItem(roomListInfo);
+                                mAdapter.notifyDataSetChanged();
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                            }
+                        });
+                    }
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getMessage());
             }
-
-            //@Override
-            //public void onCancelled(FirebaseError firebaseError) {
-            //    System.out.println("The read failed: " + firebaseError.getMessage());
-            //}
         });
+
         View roomList = inflater.inflate(R.layout.fragment_room_list, container, false);
+        //アダプターをセット
         setListAdapter(mAdapter);
+
         // Inflate the layout for this fragment
         return roomList;
 
@@ -156,10 +169,24 @@ public class RoomListFragment extends ListFragment implements AdapterView.OnItem
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String item = (String)getListView().getItemAtPosition(position);
+        RoomListInfo item = (RoomListInfo) getListView().getItemAtPosition(position);
         Toast.makeText(mContext,
-                item, Toast.LENGTH_LONG
+                item.getRoomID(), Toast.LENGTH_LONG
         ).show();
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        System.out.println("タブ切り替え");
+        for (int i=0; i < mAdapter.getCount(); i++) {
+            System.out.println(mAdapter.getRoomID(i));
+        }
+        /*if(_listview.getFooterViewsCount() == 0)
+        {
+            _listview.addFooterView(_footer);
+        }*/
     }
 
     /**
