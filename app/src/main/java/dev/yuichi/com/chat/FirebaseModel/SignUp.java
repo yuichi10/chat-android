@@ -5,13 +5,16 @@ package dev.yuichi.com.chat.FirebaseModel;
  */
 public class SignUp {
     private String name;
+    private String email;
     //private String userid;
 
-    public SignUp(String name) {
+    public SignUp(String name, String email) {
         this.name = name;
+        this.email = email;
     }
 
     public String getName() {
         return this.name;
     }
+    public String getEmail() {return this.email; }
 }

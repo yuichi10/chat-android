@@ -44,7 +44,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 if (mUser != null) {
                     // User is signed in
                     //IDの保存
-                    D.UserID = mUser.getUid();
                     Log.d("auth", "onAuthStateChanged:signed_in:" + mUser.getUid());
                 } else {
                     // User is signed out
@@ -125,7 +124,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private void signUpLogin(String email, String password, final String userName) {
+    private void signUpLogin(final String email, String password, final String userName) {
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -140,7 +139,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 } else {
                     Toast.makeText(SignUpActivity.this, "ユーザーログイン成功",
                             Toast.LENGTH_SHORT).show();
-                    SignUp signup = new SignUp(userName);
+                    SignUp signup = new SignUp(userName, email);
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference dbRef = database.getReference();
                     dbRef.child("users").child(mUser.getUid()).setValue(signup);

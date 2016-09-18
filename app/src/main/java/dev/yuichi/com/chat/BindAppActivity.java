@@ -50,7 +50,7 @@ public class BindAppActivity extends FragmentActivity implements FragmentTabHost
         tabSpec2 = tabHost.newTabSpec("tab2");
         tabSpec2.setIndicator("tab2");
         // TabHost に追加
-        tabHost.addTab(tabSpec2, SecondTabFragment.class, null);
+        tabHost.addTab(tabSpec2, FriendSearchFragment.class, null);
         // リスナー登録
         tabHost.setOnTabChangedListener(this);
     }

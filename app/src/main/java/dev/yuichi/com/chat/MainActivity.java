@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mUser = firebaseAuth.getCurrentUser();
                 if (mUser != null) {
                     // User is signed in
-                    D.UserID = mUser.getUid();
                     Log.d("auth", "onAuthStateChanged:signed_in:" + mUser.getUid());
                 } else {
                     // User is signed out
@@ -108,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         return;
                     }
                     //Sign In
-                    mAuth.signInWithEmailAndPassword(email.toString(), password.toString()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    mAuth.signInWithEmailAndPassword(D.testEmail, D.testPassword).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             Log.d("auth", "signInWithEmail:onComplete:" + task.isSuccessful());
@@ -142,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public void signIn(String email, String password) {
+    public void signIn(final String email, String password) {
         //Sign In
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
@@ -160,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(MainActivity.this, "authに成功しました",
                             Toast.LENGTH_SHORT).show();
 
-                    SignUp signup = new SignUp("name");
+                    SignUp signup = new SignUp("name", email);
                     //Firebase firebase = new Firebase(D.FirebaseURL);
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference dbRef = database.getReference();

@@ -20,6 +20,7 @@ import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -56,7 +57,7 @@ public class RoomListFragment extends ListFragment implements AdapterView.OnItem
     private DatabaseReference mDatabase;
     private Firebase firebase;
     RoomListAdapter mAdapter;
-    View mView;
+
     public RoomListFragment() {
         // Required empty public constructor
     }
@@ -91,41 +92,78 @@ public class RoomListFragment extends ListFragment implements AdapterView.OnItem
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //mAdapter = new ArrayAdapter<String>(
-         //       mContext, android.R.layout.simple_list_item_1);
         mAdapter = new RoomListAdapter(mContext);
         firebase = new Firebase(D.FirebaseURL);
         //ルームの情報をadapterに追加
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child(D.Users).child(D.UserID).child(D.Rooms).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                System.out.println(snapshot.getValue());
-                HashMap<String, Boolean> value = (HashMap) snapshot.getValue();
-                System.out.println("value: " + value);
-                if (value != null) {
-                    for (final String key : value.keySet()) {
-                        mDatabase.child(D.Rooms).child(key).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot snapshot) {
-                                Room room = snapshot.getValue(Room.class);
-                                System.out.println(room.getName());
-                                RoomListInfo roomListInfo = new RoomListInfo(key, room.getGroup(), room.getName());
-                                mAdapter.addRoomListItem(roomListInfo);
-                                mAdapter.notifyDataSetChanged();
-                            }
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                            }
-                        });
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            mDatabase.child(D.Users).child(user.getUid()).child(D.Rooms).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    System.out.println(snapshot.getValue());
+                    HashMap<String, String> value = (HashMap) snapshot.getValue();
+                    System.out.println("value: " + value);
+                    if (value != null) {
+                        for (final String key : value.keySet()) {
+                            mDatabase.child(D.Rooms).child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot snapshot) {
+                                    Room room = snapshot.getValue(Room.class);
+                                    System.out.println(room.getName());
+                                    RoomListInfo roomListInfo = new RoomListInfo(key, room.getGroup(), room.getName());
+                                    mAdapter.addRoomListItem(roomListInfo);
+                                    mAdapter.notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
+                        }
                     }
                 }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getMessage());
-            }
-        });
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    System.out.println("The read failed: " + databaseError.getMessage());
+                }
+            });
+            FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
+            System.out.println(u.getUid());
+            DatabaseReference friendRoom = mDatabase.child(D.Users).child(UtilDB.getInstance().getOwnUserID()).child(D.Friends);
+            friendRoom.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    HashMap<String, String> data = (HashMap) dataSnapshot.getValue();
+                    if (data != null) {
+                        for (Map.Entry<String, String> entry : data.entrySet()) {
+                            final String roomID = entry.getKey();
+                            mDatabase.child(D.Users).child(entry.getKey()).child(D.Name).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.getValue() != null) {
+                                        RoomListInfo roomListInfo = new RoomListInfo(roomID, false, dataSnapshot.getValue().toString());
+                                        mAdapter.addRoomListItem(roomListInfo);
+                                        mAdapter.notifyDataSetChanged();
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
 
         View roomList = inflater.inflate(R.layout.fragment_room_list, container, false);
         //アダプターをセット
