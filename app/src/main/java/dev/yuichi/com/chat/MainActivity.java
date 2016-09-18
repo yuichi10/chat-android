@@ -107,7 +107,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         return;
                     }
                     //Sign In
-                    mAuth.signInWithEmailAndPassword(D.testEmail, D.testPassword).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    mAuth.signInWithEmailAndPassword(email.toString(), password.toString()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    //mAuth.signInWithEmailAndPassword(D.testEmail, D.testPassword).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             Log.d("auth", "signInWithEmail:onComplete:" + task.isSuccessful());

@@ -87,6 +87,9 @@ public class RoomListFragment extends ListFragment implements AdapterView.OnItem
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        //added friendを追加
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        checkAddedFriends();
     }
 
     @Override
@@ -95,8 +98,9 @@ public class RoomListFragment extends ListFragment implements AdapterView.OnItem
         mAdapter = new RoomListAdapter(mContext);
         firebase = new Firebase(D.FirebaseURL);
         //ルームの情報をadapterに追加
-        mDatabase = FirebaseDatabase.getInstance().getReference();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        //ユーザーを追加
+        checkAddedFriends();
         if (user != null) {
             mDatabase.child(D.Users).child(user.getUid()).child(D.Rooms).addValueEventListener(new ValueEventListener() {
                 @Override
@@ -171,7 +175,31 @@ public class RoomListFragment extends ListFragment implements AdapterView.OnItem
 
         // Inflate the layout for this fragment
         return roomList;
+    }
 
+    private void checkAddedFriends() {
+        final DatabaseReference userRef = mDatabase.child(D.Users).child(UtilDB.getInstance().getOwnUserID());
+        userRef.child(D.AddedFriends).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                HashMap<String, String> datas = (HashMap)dataSnapshot.getValue();
+                if (datas != null) {
+                    for (Map.Entry<String, String> entry : datas.entrySet()) {
+                        //add friendsをfriendsに移動
+                        HashMap<String, String> data = new HashMap<String, String>();
+                        data.put(entry.getKey(), entry.getValue());
+                        userRef.child(D.Friends).setValue(data);
+                        //add friendsの値を削除
+                        userRef.child(D.AddedFriends).child(entry.getKey()).removeValue();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
