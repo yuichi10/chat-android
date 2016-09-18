@@ -65,13 +65,24 @@ public class UtilDB {
             }
         });
     }
-    public synchronized void doesAlreadyHasFriend(String friendID, final String caseVal, final UtilDBInterface utilDBInterface){
+    public synchronized void doesAlreadyHasFriend(final String friendID, final String caseVal, final UtilDBInterface utilDBInterface){
         mIsUser = false;
         mDatabase.child(D.Users).child(getOwnUserID()).child(D.Friends).child(friendID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     mIsUser = true;
+                } else {
+                    mDatabase.child(D.Users).child(getOwnUserID()).child(D.AddedFriends).child(friendID).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                mIsUser = true;
+                            }
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {}
+                    });
                 }
                 utilDBInterface.afterDoesAlreadyHasFriend(mIsUser, caseVal);
             }
