@@ -116,38 +116,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         return;
                     }
                     //Sign In
-                    mAuth.signInWithEmailAndPassword(email.toString(), password.toString()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    //mAuth.signInWithEmailAndPassword(D.testEmail, D.testPassword).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            Log.d("auth", "signInWithEmail:onComplete:" + task.isSuccessful());
-                            // If sign in fails, display a message to the user. If sign in succeeds
-                            // the auth state listener will be notified and logic to handle the
-                            // signed in user can be handled in the listener.
-                            if (!task.isSuccessful()) {
-                                Log.w("auth", "signInWithEmail:failed", task.getException());
-                                Toast.makeText(MainActivity.this, "authに失敗しました",
-                                        Toast.LENGTH_SHORT).show();
-                            } else {
-                                Log.w("auth", "signInWithEmail:success", task.getException());
-                                Toast.makeText(MainActivity.this, "authに成功しました",
-                                        Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent();
-                                intent.setClassName("dev.yuichi.com.chat", "dev.yuichi.com.chat.BindAppActivity");
-                                startActivity(intent);
-                                finish();
-                                return;
-                            }
-                        }
-                    });
+                    signIn(email.toString(), password.toString());
                     break;
                 case R.id.signUpButton:
                     Intent intent = new Intent();
                     intent.setClassName("dev.yuichi.com.chat", "dev.yuichi.com.chat.SignUpActivity");
                     startActivity(intent);
-                    //Sign Up
-                    /*
-                    */
                     break;
             }
         }
@@ -156,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void signIn(final String email, String password) {
         //Sign In
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            //mAuth.signInWithEmailAndPassword(D.testEmail, D.testPassword).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 Log.d("auth", "signInWithEmail:onComplete:" + task.isSuccessful());
@@ -170,14 +145,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.w("auth", "signInWithEmail:success", task.getException());
                     Toast.makeText(MainActivity.this, "authに成功しました",
                             Toast.LENGTH_SHORT).show();
-
-                    SignUp signup = new SignUp("name", email);
-                    //Firebase firebase = new Firebase(D.FirebaseURL);
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference dbRef = database.getReference();
-                    dbRef.child("users").child(mUser.getUid()).setValue(signup);
-                    //firebase.child("users/" + user.getUid()).setValue(signup);
-                    //firebase.push().setValue(signup.getSignUpDataForm());
+                    Intent intent = new Intent();
+                    intent.setClassName("dev.yuichi.com.chat", "dev.yuichi.com.chat.BindAppActivity");
+                    startActivity(intent);
+                    finish();
+                    return;
                 }
             }
         });

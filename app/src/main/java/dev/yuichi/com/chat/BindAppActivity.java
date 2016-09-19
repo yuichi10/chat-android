@@ -1,17 +1,21 @@
 package dev.yuichi.com.chat;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TabHost;
 
 import com.firebase.client.Firebase;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class BindAppActivity extends FragmentActivity implements FragmentTabHost.OnTabChangeListener {
-
+    FirebaseAuth mFirebaseAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,6 +24,8 @@ public class BindAppActivity extends FragmentActivity implements FragmentTabHost
         setToolBarInfo();
 
         setTabInfo();
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
 
         //Firebase firebase = new Firebase("https://" + D.FirebaseURL +".firebaseio.com/");
     }
@@ -53,6 +59,25 @@ public class BindAppActivity extends FragmentActivity implements FragmentTabHost
         tabHost.addTab(tabSpec2, FriendSearchFragment.class, null);
         // リスナー登録
         tabHost.setOnTabChangedListener(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.sign_out_menu:
+                mFirebaseAuth.signOut();
+                startActivity(new Intent(this, MainActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }
