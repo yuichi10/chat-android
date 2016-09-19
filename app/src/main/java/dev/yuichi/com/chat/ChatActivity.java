@@ -31,6 +31,7 @@ import dev.yuichi.com.chat.FirebaseModel.Chat;
 
 public class ChatActivity extends AppCompatActivity {
     public static class ChatViewHolder extends RecyclerView.ViewHolder {
+        //チャットで表示するビューを持ってるクラス
         public TextView otherChatTextView;
         public TextView otherChatUserTextView;
 
@@ -61,10 +62,11 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        //ルームIDを取得
         Intent intent = getIntent();
         mRoomID = intent.getStringExtra(D.RoomID);
-        System.out.println("room ID: " + mRoomID);
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        //データ保存
+        //mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         // Initialize ProgressBar and RecyclerView.
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mMessageRecyclerView = (RecyclerView) findViewById(R.id.chatRecyclerView);
@@ -89,7 +91,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-
+        //リサイクルビューのアダプター
         mFirebaseAdapter = new FirebaseRecyclerAdapter<Chat, ChatViewHolder>(
                 Chat.class,
                 R.layout.chat_list_item,
@@ -98,6 +100,7 @@ public class ChatActivity extends AppCompatActivity {
         ) {
             @Override
             protected void populateViewHolder(ChatViewHolder viewHolder, Chat model, int position) {
+                //新しいメッセージが来たら自動で処理してくれる
                 mProgressBar.setVisibility(ProgressBar.INVISIBLE);
                 System.out.println("populateViewHolder: " + model);
                 if (mUtilDB.getOwnUserID().equals(model.getUserid())) {
@@ -109,12 +112,11 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
         };
-        System.out.println("after FirebaseRecyclerAdapter");
         mFirebaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            //アダプターの変化を察知
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
-                System.out.println("onItemRangeInserted");
                 int friendlyMessageCount = mFirebaseAdapter.getItemCount();
                 int lastVisiblePosition =
                         mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
@@ -133,8 +135,9 @@ public class ChatActivity extends AppCompatActivity {
 
         mSendButton = (Button)findViewById(R.id.chatSendButton);
         mTextEditText = (EditText)findViewById(R.id.chatEditText);
-        //mTextEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(mSharedPreferences
-        //        .getInt(CodelabPreferences.FRIENDLY_MSG_LENGTH, DEFAULT_MSG_LENGTH_LIMIT))});
+        //editの文字制限 firebaseからいつでも変えられるように
+        mTextEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(mSharedPreferences
+                .getInt(CodelabPreferences.FRIENDLY_MSG_LENGTH, D.DEFAULT_MSG_LENGTH_LIMIT))});
         mTextEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -156,19 +159,15 @@ public class ChatActivity extends AppCompatActivity {
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("Clicked");
                 SpannableStringBuilder text = (SpannableStringBuilder)mTextEditText.getText();
                 if (!text.toString().equals("")){
-                    System.out.println("Not Blank Edit Text");
                     Chat chat = new Chat(
                         text.toString(), mUtilDB.getOwnUserID(), ""
                     );
                     mFirebaseDatabaseReference.child(D.Message).child(mRoomID).push().setValue(chat);
                     mTextEditText.setText("");
                 }
-
             }
         });
-        System.out.println("set Button");
     }
 }
