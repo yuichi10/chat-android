@@ -108,13 +108,17 @@ public class ChatActivity extends AppCompatActivity {
             protected void populateViewHolder(ChatViewHolder viewHolder, Chat model, int position) {
                 //新しいメッセージが来たら自動で処理してくれる
                 mProgressBar.setVisibility(ProgressBar.INVISIBLE);
-                System.out.println("populateViewHolder: " + model);
+                System.out.println("populateViewHolder: " + model.getText() + " : " + model.getUserid());
                 if (mUtilDB.getOwnUserID().equals(model.getUserid())) {
                     viewHolder.myChatTextView.setText(model.getText());
                     viewHolder.myChatUserTextView.setText(model.getUserid());
+                    viewHolder.otherChatTextView.setText("");
+                    viewHolder.otherChatUserTextView.setText("");
                 } else {
                     viewHolder.otherChatTextView.setText(model.getText());
                     viewHolder.otherChatUserTextView.setText(model.getUserid());
+                    viewHolder.myChatTextView.setText("");
+                    viewHolder.myChatUserTextView.setText("");
                 }
             }
         };
