@@ -41,6 +41,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Firebase.setAndroidContext(this);
         Firebase firebase = new Firebase(D.FirebaseURL);
         mAuth = FirebaseAuth.getInstance();
+        //すでにログインしてた場合はログインさせる
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            // Not signed in, launch the Sign In activity
+            startActivity(new Intent(this, BindAppActivity.class));
+            finish();
+            return;
+        }
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -55,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         };
+
     }
 
     @Override
