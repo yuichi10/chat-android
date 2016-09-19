@@ -141,6 +141,7 @@ public class FriendSearchFragment extends Fragment implements View.OnClickListen
             switch (v.getId()) {
                 case R.id.email_search_button:
                     UtilDB.getInstance().getUserIDFromEmail(email.toString(), UserIDKey, this);
+                    mEmailText.setText("");
                     break;
             }
         }

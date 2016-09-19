@@ -122,13 +122,14 @@ public class UtilDB {
         });
     }
 
-    //セット径
+    //新しいルームをセット
     public synchronized String setRoom(){
         Room room = new Room(false, "");
         DatabaseReference postRef = mDatabase.child(D.Rooms).push();
         postRef.setValue(room);
         return postRef.getKey();
     }
+    //新しいフレンドを追加
     public synchronized void setFriend(String friendID, String roomID) {
         //自身にフレンドを追加
         HashMap<String, String> friend = new HashMap<String, String>();
@@ -139,7 +140,6 @@ public class UtilDB {
         friend2.put(roomID, getOwnUserID());
         //自身のaddにユーザーを追加
         mDatabase.child(D.Users).child(getOwnUserID()).child(D.Friends).setValue(friend);
-
 
         //相手に追加したことを通知
         System.out.println("相手に通知");

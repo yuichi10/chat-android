@@ -74,7 +74,7 @@ public class BindAppActivity extends FragmentActivity implements FragmentTabHost
 
         // TabSpec を生成する
         tabSpec2 = tabHost.newTabSpec("tab2");
-        tabSpec2.setIndicator("tab2");
+        tabSpec2.setIndicator("友達検索");
         // TabHost に追加
         tabHost.addTab(tabSpec2, FriendSearchFragment.class, null);
         // リスナー登録
