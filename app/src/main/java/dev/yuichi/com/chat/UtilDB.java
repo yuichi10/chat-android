@@ -132,17 +132,14 @@ public class UtilDB {
     //新しいフレンドを追加
     public synchronized void setFriend(String friendID, String roomID) {
         //自身にフレンドを追加
-        HashMap<String, String> friend = new HashMap<String, String>();
-        //friend.put(friendID, roomID);
-        friend.put(roomID, friendID);
         HashMap<String, String> friend2 = new HashMap<String, String>();
         //friend2.put(getOwnUserID(), roomID);
         friend2.put(roomID, getOwnUserID());
         //自身のaddにユーザーを追加
-        mDatabase.child(D.Users).child(getOwnUserID()).child(D.Friends).setValue(friend);
+        mDatabase.child(D.Users).child(getOwnUserID()).child(D.Friends).child(roomID).setValue(friendID);
 
         //相手に追加したことを通知
         System.out.println("相手に通知");
-        mDatabase.child(D.Users).child(friendID).child(D.AddedFriends).setValue(friend2);
+        mDatabase.child(D.Users).child(friendID).child(D.AddedFriends).child(roomID).setValue(getOwnUserID());
     }
 }

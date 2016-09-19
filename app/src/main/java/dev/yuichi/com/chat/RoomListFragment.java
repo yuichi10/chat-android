@@ -114,10 +114,11 @@ public class RoomListFragment extends ListFragment implements AdapterView.OnItem
                                 @Override
                                 public void onDataChange(DataSnapshot snapshot) {
                                     Room room = snapshot.getValue(Room.class);
-                                    System.out.println(room.getName());
-                                    RoomListInfo roomListInfo = new RoomListInfo(key, room.getGroup(), room.getName());
-                                    mAdapter.addRoomListItem(roomListInfo);
-                                    mAdapter.notifyDataSetChanged();
+                                    if (room != null) {
+                                        RoomListInfo roomListInfo = new RoomListInfo(key, room.getGroup(), room.getName());
+                                        mAdapter.addRoomListItem(roomListInfo);
+                                        mAdapter.notifyDataSetChanged();
+                                    }
                                 }
 
                                 @Override
