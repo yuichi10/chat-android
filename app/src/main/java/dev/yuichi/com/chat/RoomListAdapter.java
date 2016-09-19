@@ -48,7 +48,6 @@ public class RoomListAdapter extends BaseAdapter{
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        System.out.println("getView: " + mRoomListInfos.get(position).getName());
         convertView = mLayoutInflater.inflate(R.layout.room_list_item,parent,false);
         ((TextView)convertView.findViewById(R.id.room_list_item_name)).setText(mRoomListInfos.get(position).getName());
         ((TextView)convertView.findViewById(R.id.room_list_item_comment)).setText(mRoomListInfos.get(position).getRoomID());

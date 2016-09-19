@@ -21,6 +21,7 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -105,9 +106,7 @@ public class RoomListFragment extends ListFragment implements AdapterView.OnItem
             mDatabase.child(D.Users).child(user.getUid()).child(D.Rooms).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    System.out.println(snapshot.getValue());
                     HashMap<String, String> value = (HashMap) snapshot.getValue();
-                    System.out.println("value: " + value);
                     if (value != null) {
                         for (final String key : value.keySet()) {
                             mDatabase.child(D.Rooms).child(key).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -135,7 +134,7 @@ public class RoomListFragment extends ListFragment implements AdapterView.OnItem
                 }
             });
             DatabaseReference friendRoom = mDatabase.child(D.Users).child(UtilDB.getInstance().getOwnUserID()).child(D.Friends);
-            friendRoom.addListenerForSingleValueEvent(new ValueEventListener() {
+            friendRoom.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     HashMap<String, String> data = (HashMap) dataSnapshot.getValue();
@@ -151,7 +150,6 @@ public class RoomListFragment extends ListFragment implements AdapterView.OnItem
                                         mAdapter.notifyDataSetChanged();
                                     }
                                 }
-
                                 @Override
                                 public void onCancelled(DatabaseError databaseError) {
 
@@ -160,11 +158,8 @@ public class RoomListFragment extends ListFragment implements AdapterView.OnItem
                         }
                     }
                 }
-
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
+                public void onCancelled(DatabaseError databaseError) {}
             });
         }
 
@@ -251,7 +246,7 @@ public class RoomListFragment extends ListFragment implements AdapterView.OnItem
         super.onResume();
         System.out.println("タブ切り替え");
         for (int i=0; i < mAdapter.getCount(); i++) {
-            System.out.println(mAdapter.getRoomID(i));
+            //System.out.println(mAdapter.getRoomID(i));
         }
         /*if(_listview.getFooterViewsCount() == 0)
         {
