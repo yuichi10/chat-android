@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class BindAppActivity extends FragmentActivity implements FragmentTabHost.OnTabChangeListener {
     FirebaseAuth mFirebaseAuth;
+    Toolbar mToolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,14 +39,14 @@ public class BindAppActivity extends FragmentActivity implements FragmentTabHost
     }
 
     private void setToolBarInfo() {
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
-        toolbar.setTitle("Chatアプリ");
-        toolbar.setTitleTextColor(-1);
-        toolbar.setNavigationIcon(R.drawable.common_google_signin_btn_icon_dark);
+        //Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        mToolbar = (Toolbar)findViewById(R.id.toolbar);
+        mToolbar.setTitle("Chatアプリ");
+        mToolbar.setTitleTextColor(-1);
+        mToolbar.setNavigationIcon(R.drawable.common_google_signin_btn_icon_light);
         //setActionBar(toolbar);
-
-        toolbar.inflateMenu(R.menu.main_menu);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+        mToolbar.inflateMenu(R.menu.main_menu);
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 // メニューのクリック処理
@@ -80,7 +81,7 @@ public class BindAppActivity extends FragmentActivity implements FragmentTabHost
         // リスナー登録
         tabHost.setOnTabChangedListener(this);
     }
-
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -99,4 +100,5 @@ public class BindAppActivity extends FragmentActivity implements FragmentTabHost
                 return super.onOptionsItemSelected(item);
         }
     }
+    */
 }

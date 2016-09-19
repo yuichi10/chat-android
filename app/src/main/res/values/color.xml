@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 城-->
+    <color name="white">#FFFFFF</color>
+    <!-- くろ -->
+    <color name="black">#000000</color>
+    <!-- あお -->
+    <color name="blue">#0000FF</color>
+    <!-- あか -->
+    <color name="red">#FF0000</color>
+    <!-- きいろ -->
+    <color name="yellow">#FFFF00</color>
+    <!-- みどり -->
+    <color name="green">#00FF00</color>
+    <!-- むらさき -->
+    <color name="purple">#9900CC</color>
+    <!-- ピンク -->
+    <color name="pink">#FF00FF</color>
+    <!-- グレー -->
+    <color name="gray">#BEBEBE</color>
+    <!-- アイボリー -->
+    <color name="ivory">#EEEEE0</color>
+    <!-- オレンジ -->
+    <color name="orange">#FF9900</color>
+    <!-- 茶 -->
+    <color name="brown">#CC9900</color>
+    <!-- クリーム -->
+    <color name="cream">#FFFFCC</color>
+    <!-- darkcyan -->
+    <color name="darkcyan">#008B8B</color>
+    <!-- lightyellow -->
+    <color name="lightyellow">#ffffE0</color>
+    <!-- wheat  -->
+    <color name="wheat">#F5DEB3</color>
+    <!-- slateblue  -->
+    <color name="slateblue">#6A5ACD</color>
+</resources>

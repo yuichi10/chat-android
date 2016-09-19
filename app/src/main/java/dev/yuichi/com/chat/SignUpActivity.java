@@ -136,6 +136,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                     Intent intent = new Intent();
                     intent.setClassName(D.packageRoot, D.packageRoot + ".MainActivity");
                     startActivity(intent);
+                    finish();
                 } else {
                     Toast.makeText(SignUpActivity.this, "ユーザーログイン成功",
                             Toast.LENGTH_SHORT).show();
@@ -146,6 +147,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                     Intent intent = new Intent();
                     intent.setClassName(D.packageRoot, D.packageRoot + ".BindAppActivity");
                     startActivity(intent);
+                    finish();
                 }
             }
         });
