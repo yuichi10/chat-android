@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TabHost;
+//import android.widget.Toolbar;
+
 
 import com.firebase.client.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,6 +42,24 @@ public class BindAppActivity extends FragmentActivity implements FragmentTabHost
         toolbar.setTitle("Chatアプリ");
         toolbar.setTitleTextColor(-1);
         toolbar.setNavigationIcon(R.drawable.common_google_signin_btn_icon_dark);
+        //setActionBar(toolbar);
+
+        toolbar.inflateMenu(R.menu.main_menu);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // メニューのクリック処理
+                switch (item.getItemId()) {
+                    case R.id.sign_out_menu:
+                        mFirebaseAuth.signOut();
+                        Intent intent = new Intent();
+                        intent.setClassName(D.packageRoot, D.packageRoot + ".MainActivity");
+                        startActivity(intent);
+                        return true;
+                }
+                return true;
+            }
+        });
         //setSupportActionBar(toolbar);
     }
 
@@ -79,5 +99,4 @@ public class BindAppActivity extends FragmentActivity implements FragmentTabHost
                 return super.onOptionsItemSelected(item);
         }
     }
-
 }

@@ -11,6 +11,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import dev.yuichi.com.chat.FirebaseModel.Room;
 
@@ -67,17 +68,29 @@ public class UtilDB {
     }
     public synchronized void doesAlreadyHasFriend(final String friendID, final String caseVal, final UtilDBInterface utilDBInterface){
         mIsUser = false;
-        mDatabase.child(D.Users).child(getOwnUserID()).child(D.Friends).child(friendID).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.child(D.Users).child(getOwnUserID()).child(D.Friends).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    mIsUser = true;
-                } else {
-                    mDatabase.child(D.Users).child(getOwnUserID()).child(D.AddedFriends).child(friendID).addListenerForSingleValueEvent(new ValueEventListener() {
+                HashMap<String, String> roomFriend = (HashMap)dataSnapshot.getValue();
+                if (roomFriend != null) {
+                    for (Map.Entry<String, String> entry : roomFriend.entrySet()) {
+                        if (entry.getValue().equals(friendID)) {
+                            mIsUser = true;
+                        }
+                    }
+                }
+                if (!mIsUser) {
+                    //まだ友達じゃなかったとき added friendの方も探す
+                    mDatabase.child(D.Users).child(getOwnUserID()).child(D.AddedFriends).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists()) {
-                                mIsUser = true;
+                            HashMap<String, String> roomFriend = (HashMap)dataSnapshot.getValue();
+                            if (roomFriend != null) {
+                                for (Map.Entry<String, String> entry : roomFriend.entrySet()) {
+                                    if (entry.getValue().equals(friendID)) {
+                                        mIsUser = true;
+                                    }
+                                }
                             }
                         }
                         @Override
@@ -119,9 +132,11 @@ public class UtilDB {
     public synchronized void setFriend(String friendID, String roomID) {
         //自身にフレンドを追加
         HashMap<String, String> friend = new HashMap<String, String>();
-        friend.put(friendID, roomID);
+        //friend.put(friendID, roomID);
+        friend.put(roomID, friendID);
         HashMap<String, String> friend2 = new HashMap<String, String>();
-        friend2.put(getOwnUserID(), roomID);
+        //friend2.put(getOwnUserID(), roomID);
+        friend2.put(roomID, getOwnUserID());
         //自身のaddにユーザーを追加
         mDatabase.child(D.Users).child(getOwnUserID()).child(D.Friends).setValue(friend);
 

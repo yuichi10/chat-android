@@ -122,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Intent intent = new Intent();
                     intent.setClassName("dev.yuichi.com.chat", "dev.yuichi.com.chat.SignUpActivity");
                     startActivity(intent);
+                    //finish();;
                     break;
             }
         }

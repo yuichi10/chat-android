@@ -133,8 +133,6 @@ public class RoomListFragment extends ListFragment implements AdapterView.OnItem
                     System.out.println("The read failed: " + databaseError.getMessage());
                 }
             });
-            FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
-            System.out.println(u.getUid());
             DatabaseReference friendRoom = mDatabase.child(D.Users).child(UtilDB.getInstance().getOwnUserID()).child(D.Friends);
             friendRoom.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -142,8 +140,8 @@ public class RoomListFragment extends ListFragment implements AdapterView.OnItem
                     HashMap<String, String> data = (HashMap) dataSnapshot.getValue();
                     if (data != null) {
                         for (Map.Entry<String, String> entry : data.entrySet()) {
-                            final String roomID = entry.getValue();
-                            mDatabase.child(D.Users).child(entry.getKey()).child(D.Name).addListenerForSingleValueEvent(new ValueEventListener() {
+                            final String roomID = entry.getKey();
+                            mDatabase.child(D.Users).child(entry.getValue()).child(D.Name).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.getValue() != null) {
