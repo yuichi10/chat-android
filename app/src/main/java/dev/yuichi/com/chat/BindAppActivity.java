@@ -81,24 +81,4 @@ public class BindAppActivity extends FragmentActivity implements FragmentTabHost
         // リスナー登録
         tabHost.setOnTabChangedListener(this);
     }
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.sign_out_menu:
-                mFirebaseAuth.signOut();
-                startActivity(new Intent(this, MainActivity.class));
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-    */
 }
